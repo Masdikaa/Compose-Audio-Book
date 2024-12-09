@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Compose Audio Book</string>
+    <string-array name="img_source">
+        <item>https://i.pinimg.com/736x/52/ac/73/52ac731d6957581af4c887910a456b06.jpg</item>
+        <item>https://i.pinimg.com/736x/c2/08/5c/c2085c59d1e1abf226c16bf5939928c0.jpg</item>
+        <item>https://i.pinimg.com/736x/6c/16/a7/6c16a7dccf4ec9b4410a29e3a1cf9f47.jpg</item>
+        <item>https://i.pinimg.com/236x/8c/1d/c7/8c1dc7f4e14b8796baef0f80018cfa2b.jpg</item>
+        <item>https://i.pinimg.com/236x/e8/4a/46/e84a463624e98ca3f4a4023b4c0f11e2.jpg</item>
+        <item>https://i.pinimg.com/736x/ac/b4/58/acb458c6015b062adc18faecff9a535e.jpg</item>
+        <item>https://i.pinimg.com/736x/87/aa/07/87aa07ad6dc3a449381db0ddfd03f08d.jpg</item>
+        <item>https://i.pinimg.com/236x/89/90/64/8990643b2236674a1e17cebbd70e9e05.jpg</item>
+    </string-array>
+</resources>
