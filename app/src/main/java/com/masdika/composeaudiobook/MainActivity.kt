@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.masdika.composeaudiobook
 
 import android.os.Bundle
@@ -7,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,7 +23,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -38,7 +42,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,7 +50,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -57,11 +60,15 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Straight
 import com.exyte.animatednavbar.animation.indendshape.Height
@@ -69,111 +76,121 @@ import com.exyte.animatednavbar.animation.indendshape.shapeCornerRadius
 import com.masdika.composeaudiobook.ui.theme.ComposeAudioBookTheme
 
 class MainActivity : ComponentActivity() {
-
-    private val fontFamily = FontFamily(
-        Font(R.font.gothampro, FontWeight.Normal),
-        Font(R.font.gothampro_black, FontWeight.Black),
-        Font(R.font.gothampro_bold, FontWeight.Bold),
-        Font(R.font.gothampro_light, FontWeight.Light),
-        Font(R.font.gothampro_medium, FontWeight.Medium)
-    )
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
             ComposeAudioBookTheme {
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            colors = topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            title = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(end = 18.dp)
-                                ) {
-                                    Text(
-                                        text = "Read Me",
-                                        style = TextStyle(
-                                            fontFamily = fontFamily,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    )
-
-                                    Icon(
-                                        modifier = Modifier
-                                            .height(24.dp)
-                                            .width(24.dp)
-                                            .clickable {
-                                                Toast
-                                                    .makeText(this@MainActivity, "Search", Toast.LENGTH_SHORT)
-                                                    .show()
-                                            },
-                                        painter = painterResource(id = R.drawable.search_icon),
-                                        contentDescription = "Search",
-                                    )
-
-                                }
-
-                            },
-                        )
-                    },
-
-                    bottomBar = {
-                        BottomBar()
-                    },
-
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                { innerPadding ->
-
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .padding(horizontal = 18.dp)
-                            .padding(vertical = 10.dp)
-                            .fillMaxSize()
-                    ) {
-
-                        PlayedNowCard(
-                            image = painterResource(id = R.drawable.sample),
-                            authorName = "Yuval Noah Harari",
-                            minutePlayedLeft = "8h 12m",
-                            audioBookTitle = "Sapiens, A Brief \nHistory of Humankind",
-                            fontFamily = fontFamily
-                        )
-
-                        ChipSection(
-                            chip = listOf("All", "Roman", "Thriller", "Detective", "Fantasy")
-                        )
-
-                    }
-
-                }
+                Navigation()
             }
         }
     }
 }
 
 @Composable
+fun MainScreen(navController: NavController, modifier: Modifier = Modifier) {
+    Scaffold(
+        topBar = {
+            TopBar()
+        },
+        bottomBar = {
+            BottomBar()
+        },
+
+        modifier = modifier.fillMaxSize()
+
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 18.dp)
+                .padding(vertical = 10.dp)
+                .fillMaxSize()
+        ) {
+            PlayedNowCard(
+                image = "https://i.pinimg.com/736x/52/ac/73/52ac731d6957581af4c887910a456b06.jpg",
+                authorName = "Yuval Noah Harari",
+                minutePlayedLeft = "8h 12m",
+                audioBookTitle = "Sapiens, A Brief \nHistory of Humankind"
+            )
+
+            ChipSection(
+                chip = listOf("All", "Roman", "Thriller", "Detective", "Fantasy")
+            )
+
+            val listOfBook = listOf(
+                Book(
+                    author = "Elizabeth Gilbert",
+                    title = "City of Girls",
+                    description = "Told from the perspective of an older woman as she looks back on her youth with both pleasure and regret (but mostly pleasure), City of Girls explores themes of female sexuality and promiscuity, as well as the idiosyncrasies of true love. Written with a powerful wisdom about human desire and connection, City of Girls is a love story like no other.",
+                    image = "https://i.pinimg.com/236x/e8/4a/46/e84a463624e98ca3f4a4023b4c0f11e2.jpg",
+                    rate = 4.8f,
+                ),
+                Book(
+                    author = "Boris Akunin",
+                    title = "The Diamond Chariot",
+                    description = "The Diamond Chariot is a historical mystery novel by internationally acclaimed Russian detective story writer Boris Akunin, published originally in 2003. It is the tenth novel in Akunin's Erast Fandorin series of historical detective novels",
+                    image = "https://i.pinimg.com/736x/ac/b4/58/acb458c6015b062adc18faecff9a535e.jpg",
+                    rate = 4.7f
+                )
+            )
+            PlaylistsSection(listOfBook)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar() {
+    val context = LocalContext.current
+    TopAppBar(
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 18.dp)
+            ) {
+                Text(
+                    text = "Read Me",
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.gothampro)),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+                Icon(
+                    modifier = Modifier
+                        .height(24.dp)
+                        .width(24.dp)
+                        .clickable {
+                            Toast
+                                .makeText(context, "Search", Toast.LENGTH_SHORT)
+                                .show()
+                        },
+                    painter = painterResource(id = R.drawable.search_icon),
+                    contentDescription = "Search",
+                )
+            }
+        },
+    )
+}
+
+@Composable
 fun BottomBar(modifier: Modifier = Modifier) {
-    val navigationBarItems = remember { NavigationBarItems.values() }
-    var selectedIndex by remember { mutableStateOf(0) }
+    val navigationBarItems = remember { NavigationBarItems.entries.toTypedArray() }
+    var selectedIndex by remember { mutableIntStateOf(0) }
     val interactionSource = remember { MutableInteractionSource() }
     val context = LocalContext.current
 
     AnimatedNavigationBar(
-        modifier = Modifier.height(64.dp),
+        modifier = modifier.height(64.dp),
         selectedIndex = selectedIndex,
         cornerRadius = shapeCornerRadius(20.dp),
         ballAnimation = Straight(tween(200)),
@@ -207,11 +224,10 @@ fun BottomBar(modifier: Modifier = Modifier) {
 @Composable
 fun PlayedNowCard(
     modifier: Modifier = Modifier,
-    image: Painter,
+    image: String,
     authorName: String,
     minutePlayedLeft: String,
     audioBookTitle: String,
-    fontFamily: FontFamily
 ) {
     Card(
         modifier = modifier
@@ -227,10 +243,10 @@ fun PlayedNowCard(
             val (imageRef, authorNameRef, minutePlayedLeftRef, audioBookTitleRef, gradientBoxRef) = createRefs()
             val startTextGuideline = createGuidelineFromStart(0.1f)
             val endTextGuideline = createGuidelineFromEnd(0.1f)
-            val topTextGuideline = createGuidelineFromTop(0.2f)
-            val bottomTextGuideline = createGuidelineFromBottom(0.2f)
+            val topTextGuideline = createGuidelineFromTop(0.15f)
+            val bottomTextGuideline = createGuidelineFromBottom(0.15f)
 
-            Image(
+            GlideImage(
                 modifier = Modifier.constrainAs(imageRef) {
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
@@ -240,7 +256,7 @@ fun PlayedNowCard(
                     start.linkTo(parent.start)
                 },
                 contentDescription = "Played",
-                painter = image,
+                model = image,
                 contentScale = ContentScale.Crop
             )
 
@@ -257,11 +273,10 @@ fun PlayedNowCard(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black.copy(alpha = 0.4f),
+                                Color.Black,
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.4f)
+                                Color.Black
                             ),
-                            // startY = 300f
                         )
                     )
             )
@@ -275,11 +290,11 @@ fun PlayedNowCard(
                 },
                 text = audioBookTitle,
                 style = TextStyle(
-                    fontFamily = fontFamily,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
                     fontWeight = FontWeight.Thin,
                     color = Color.White
                 ),
-                fontSize = 23.sp
+                fontSize = 24.sp
             )
 
             Text(
@@ -291,7 +306,7 @@ fun PlayedNowCard(
                 },
                 text = authorName,
                 style = TextStyle(
-                    fontFamily = fontFamily,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
                     fontWeight = FontWeight.Normal,
                     color = Color.White
                 ),
@@ -306,17 +321,17 @@ fun PlayedNowCard(
                     end.linkTo(endTextGuideline)
                 },
                 style = TextStyle(
-                    fontFamily = fontFamily,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
                     fontWeight = FontWeight.Normal,
                     color = Color.White
                 ),
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 text = buildAnnotatedString {
                     append(minutePlayedLeft)
                     withStyle(
                         style = SpanStyle(
                             color = Color.LightGray,
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                         )
                     ) {
                         append(" left")
@@ -331,7 +346,7 @@ fun PlayedNowCard(
 @Composable
 fun ChipSection(chip: List<String>, modifier: Modifier = Modifier) {
     var selectedChipIndex by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -345,7 +360,8 @@ fun ChipSection(chip: List<String>, modifier: Modifier = Modifier) {
                 } else {
                     MaterialTheme.colorScheme.surface
                 },
-                animationSpec = tween(durationMillis = 400)
+                animationSpec = tween(durationMillis = 400),
+                label = "Chip Section Box Color Animation"
             )
 
             val selectedColorText by animateColorAsState(
@@ -354,7 +370,8 @@ fun ChipSection(chip: List<String>, modifier: Modifier = Modifier) {
                 } else {
                     MaterialTheme.colorScheme.onSurface
                 },
-                animationSpec = tween(durationMillis = 500)
+                animationSpec = tween(durationMillis = 500),
+                label = "Chip Section Text Color Animation"
             )
 
             Box(
@@ -382,6 +399,114 @@ fun ChipSection(chip: List<String>, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun PlaylistsSection(
+    books: List<Book>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn {
+        items(books) { book ->
+            PlaylistsItem(book = book)
+        }
+    }
+}
+
+@Composable
+fun PlaylistsItem(
+    book: Book,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 18.dp),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            val (bookImageRef, authorRef, titleRef, descriptionRef) = createRefs()
+
+            Card(
+                modifier = Modifier
+                    .constrainAs(bookImageRef) {
+                        start.linkTo(parent.start, margin = 15.dp)
+                        top.linkTo(parent.top, margin = 15.dp)
+                        bottom.linkTo(parent.bottom, margin = 15.dp)
+                        width = Dimension.value(125.dp)
+                        height = Dimension.value(156.25.dp)
+                    },
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(2.dp),
+            ) {
+                GlideImage(
+                    model = book.image,
+                    contentDescription = "Book Cover",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Text(
+                text = book.author,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
+                ),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                modifier = Modifier.constrainAs(authorRef) {
+                    top.linkTo(bookImageRef.top, margin = 12.dp)
+                    start.linkTo(bookImageRef.end, margin = 15.dp)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+            )
+
+            Text(
+                text = book.title,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.constrainAs(titleRef) {
+                    bottom.linkTo(descriptionRef.top, margin = 10.dp)
+                    start.linkTo(bookImageRef.end, margin = 15.dp)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+            )
+
+            Text(
+                text = book.description,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.gothampro)),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                ),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 3,
+                modifier = Modifier.constrainAs(descriptionRef) {
+                    bottom.linkTo(bookImageRef.bottom, margin = 12.dp)
+                    start.linkTo(bookImageRef.end, margin = 15.dp)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+            )
+
+        }
+
+    }
+}
+
+// Navbar items
 enum class NavigationBarItems(val icon: ImageVector) {
     Home(icon = Icons.Default.Home),
     Menu(icon = Icons.Default.Menu),
