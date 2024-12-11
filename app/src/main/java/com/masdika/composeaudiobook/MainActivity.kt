@@ -404,7 +404,7 @@ fun PlaylistsSection(
     books: List<Book>,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(books) { book ->
             PlaylistsItem(book = book)
         }
@@ -417,7 +417,7 @@ fun PlaylistsItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
         shape = RoundedCornerShape(14.dp),
@@ -477,7 +477,7 @@ fun PlaylistsItem(
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.constrainAs(titleRef) {
-                    bottom.linkTo(descriptionRef.top, margin = 10.dp)
+                    top.linkTo(authorRef.bottom, margin = 10.dp)
                     start.linkTo(bookImageRef.end, margin = 15.dp)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
@@ -492,12 +492,13 @@ fun PlaylistsItem(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 ),
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 3,
                 modifier = Modifier.constrainAs(descriptionRef) {
                     bottom.linkTo(bookImageRef.bottom, margin = 12.dp)
                     start.linkTo(bookImageRef.end, margin = 15.dp)
                     end.linkTo(parent.end)
+                    top.linkTo(titleRef.bottom, margin = 10.dp)
                     width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
                 }
             )
 
