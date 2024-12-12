@@ -2,8 +2,7 @@ package com.masdika.composeaudiobook
 
 sealed class Screen(val route: String) {
     object MainScreen : Screen("main_screen")
-    object Menu : Screen("menu_screen")
-    object Profile : Screen("profile_screen")
+    object PlayScreen : Screen("play_screen")
 
     fun withArgs(vararg args: String): String {
         return buildString {
