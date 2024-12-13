@@ -120,6 +120,13 @@ fun MainScreen(navController: NavController, modifier: Modifier = Modifier) {
                     description = "The Diamond Chariot is a historical mystery novel by internationally acclaimed Russian detective story writer Boris Akunin, published originally in 2003. It is the tenth novel in Akunin's Erast Fandorin series of historical detective novels",
                     image = "https://i.pinimg.com/736x/ac/b4/58/acb458c6015b062adc18faecff9a535e.jpg",
                     rate = 4.7f
+                ),
+                Book(
+                    author = "Masdika Ilhan Mansiz",
+                    title = "Lorem Ipsum",
+                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ullamco eum nisi hendrerit augue eleifend anim mollit tation eros possim enim blandit doming, laoreet stet elit pariatur kasd reprehenderit iriure iriure stet possim ea consetetur et sunt vel facilisi. Congue iure aliquam laboris facilisi dignissim veniam option amet eleifend adipisici duis accumsan erat labore cillum, tation autem dolore dolor elit accumsan imperdiet culpa. Excepteur erat dolore. Augue cupiditat ipsum.",
+                    image = "https://i.pinimg.com/236x/e8/4a/46/e84a463624e98ca3f4a4023b4c0f11e2.jpg",
+                    rate = 4.7f
                 )
             )
 
@@ -415,7 +422,7 @@ fun PlaylistsItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 18.dp)
+            .padding(bottom = 20.dp)
             .clickable(interactionSource = interactionSource, indication = null) { onClick(book) },
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(
@@ -489,14 +496,16 @@ fun PlaylistsItem(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 ),
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.constrainAs(descriptionRef) {
-                    bottom.linkTo(bookImageRef.bottom, margin = 12.dp)
-                    start.linkTo(bookImageRef.end, margin = 15.dp)
-                    end.linkTo(parent.end)
-                    top.linkTo(titleRef.bottom, margin = 10.dp)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                }
+                modifier = Modifier
+                    .constrainAs(descriptionRef) {
+                        bottom.linkTo(bookImageRef.bottom, margin = 12.dp)
+                        start.linkTo(bookImageRef.end, margin = 15.dp)
+                        end.linkTo(parent.end)
+                        top.linkTo(titleRef.bottom, margin = 10.dp)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
+                    .padding(end = 8.dp)
             )
 
         }
